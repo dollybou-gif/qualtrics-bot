@@ -6,12 +6,14 @@ import fetch from "node-fetch";
 dotenv.config();
 
 const app = express();
-app.use(cors());
-app.use(express.json());
+app.use(cors()); // Allow requests from anywhere
+app.use(express.json()); // Parse JSON bodies
 
+// Endpoint Qualtrics will POST to
 app.post("/chat", async (req, res) => {
   try {
     const messages = req.body.messages;
+
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -27,8 +29,9 @@ app.post("/chat", async (req, res) => {
     });
 
     const data = await response.json();
+
     if (data.choices && data.choices.length > 0) {
-      res.json(data);
+      res.json(data); // Forward AI response directly to Qualtrics
     } else {
       res.json({ choices: [{ message: { content: "No response received" } }] });
     }
@@ -40,4 +43,5 @@ app.post("/chat", async (req, res) => {
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Server running on port ${port}`));
+
 
