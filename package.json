@@ -1,8 +1,6 @@
 {
-  "name": "qualtrics-gpt5-server",
+  "name": "qualtrics-ai-bot",
   "version": "1.0.0",
-  "description": "Render server for Qualtrics GPT-5-mini chat",
-  "main": "server.js",
   "type": "module",
   "scripts": {
     "start": "node server.js"
@@ -10,8 +8,8 @@
   "dependencies": {
     "express": "^4.18.2",
     "cors": "^2.8.5",
-    "body-parser": "^1.20.2",
-    "node-fetch": "^3.3.2"
+    "dotenv": "^16.3.1",
+    "node-fetch": "^3.4.0"
   }
 }
 
