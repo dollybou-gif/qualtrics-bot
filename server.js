@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import fetch from "node-fetch"; // if not using native fetch
+import fetch from "node-fetch";
 
 dotenv.config();
 const app = express();
@@ -25,12 +25,19 @@ app.post("/chat", async (req, res) => {
       })
     });
     const data = await response.json();
-    res.json(data);
+
+    // Make sure we forward exactly what Qualtrics expects
+    if (data.choices && data.choices.length > 0) {
+      res.json(data);
+    } else {
+      res.json({ choices: [{ message: { content: "No response received" } }] });
+    }
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ choices: [{ message: { content: "Server error: " + err.message } }] });
   }
 });
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Server running on port ${port}`));
+
