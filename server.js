@@ -6,18 +6,16 @@ import fetch from "node-fetch";
 dotenv.config();
 
 const app = express();
-app.use(cors()); // Allow requests from anywhere
-app.use(express.json()); // Parse JSON bodies
+app.use(cors());
+app.use(express.json());
 
-// Endpoint Qualtrics will POST to
 app.post("/chat", async (req, res) => {
   try {
-    const messages = req.body.messages;
-
+    const messages = req.body.messages; // Get conversation from Qualtrics
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`, // Your key stays secret on Render
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
@@ -30,8 +28,9 @@ app.post("/chat", async (req, res) => {
 
     const data = await response.json();
 
+    // Send back exactly what Qualtrics expects
     if (data.choices && data.choices.length > 0) {
-      res.json(data); // Forward AI response directly to Qualtrics
+      res.json(data);
     } else {
       res.json({ choices: [{ message: { content: "No response received" } }] });
     }
