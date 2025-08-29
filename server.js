@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import fetch from "node-fetch";
 
 dotenv.config();
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -24,9 +25,8 @@ app.post("/chat", async (req, res) => {
         temperature: 0.5
       })
     });
-    const data = await response.json();
 
-    // Make sure we forward exactly what Qualtrics expects
+    const data = await response.json();
     if (data.choices && data.choices.length > 0) {
       res.json(data);
     } else {
