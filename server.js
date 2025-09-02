@@ -15,26 +15,28 @@ app.post("/chat", async (req, res) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, // API key is stored securely in Render
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "gpt-5-mini-2025-08-07",   // same model you defined in Qualtrics
+        model: "gpt-5-mini-2025-08-07",
         messages: messages,
-        max_tokens: 2250,       // dissertation-appropriate token budget
-        temperature: 0.5,       // balanced randomness
+        max_tokens: 2250,
+        temperature: 0.5,
       }),
     });
 
     const data = await response.json();
-    res.json(data); // send response back to Qualtrics
+
+    // Log everything for debugging
+    console.log("OpenAI response:", JSON.stringify(data, null, 2));
+
+    if (!response.ok) {
+      return res.status(response.status).json(data); // forward error
+    }
+
+    res.json(data);
   } catch (error) {
-    console.error("Error in /chat:", error);
+    console.error("Server error:", error);
     res.status(500).json({ error: error.message });
   }
-});
-
-// Render will use this port
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
 });
